@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html style="">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
+<head>
+    <meta charset="utf-8" />
+    <title>Options</title>
+    <link rel="stylesheet" type="text/css" href="jWebForm/jWebForm.css" />
+    <script type="text/javascript" src="jWebForm/jWebForm.js"></script>
+    <script type="text/javascript" src="jWebForm/DropDown.js"></script>
+    <script type="text/javascript" src="jWebForm/DropDownList.js"></script>
+    <script type="text/javascript">
+
+        $j.Page_Load = function Page_Load()
+        {
+            
+        }
+
+        function btnSave_Click()
+        {
+
+            var playInterval = txtPlayInterval.value;
+
+            if (playInterval.trim() == "") {
+
+                alert("“播放间隔” 不能为空 。");
+                return;
+            }
+
+            playInterval = playInterval * 1000;
+
+            if (isNaN(playInterval))
+            {
+                alert("“播放间隔 应为数字 。”");
+                return;
+            }
+
+            parent.$j.PictureBoxFit.PlayInterval(playInterval);
+
+        }
+
+        function btnCancel_Click()
+        {
+            parent.dragOptions.Close();
+        }
+
+
+
+    </script>
+</head>
+<body style="margin:0px; ">
+    
+    <div style="height: 100%;">
+
+        <table style="width:100%; height:100%;">
+            <tr>
+                <td>播放间隔</td>
+            </tr>
+            <tr>
+                <td><input id="txtPlayInterval" value="5" style="width: 250px; height: 25px" />&nbsp;&nbsp;秒</td>
+            </tr>
+            <tr>
+                <td style="height:100%"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right; cursor:default">
+                    <span onclick="btnSave_Click();">确定</span>
+                    <span onclick="btnCancel_Click();">取消</span>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html style="">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="jWebForm/jWebForm.css" />
+    <script type="text/javascript" src="jWebForm/jWebForm.js"></script>
+    <script type="text/javascript" src="jWebForm/DropMenu.js"></script>
+    <script type="text/javascript" src="jWebForm/DragObj.js"></script>
+    <script type="text/javascript" src="jWebForm/PictureBoxFit.js"></script>
+    <script type="text/javascript" src="jWebForm/ContextMenu.js"></script>
+    <script type="text/javascript">
+
+        $j.Page_Load = function Page_Load() {
+
+        }
+
+        function OpenFolderDialog() {
+            Cef.OpenFolderDialog();
+        }
+
+        function OpenFolder(path) {
+
+            var txtPath = document.getElementById("txtPath");
+
+            txtPath.value = path;
+        }
+
+        var _drag;
+        var _contextMenu;
+        var _playPath;
+
+        function PlayFolder() {
+            //var ifrEditor = document.getElementById("ifrEditor");
+            //var text = ifrEditor.contentWindow.document.body.innerText;
+
+            var txtPath = document.getElementById("txtPath");
+
+            var path = txtPath.value;
+
+            if (path.trim() == "") {
+
+                alert("文件夹路径不能为空 ！");
+                return;
+            }
+
+            var urlList = Cef.GetImages(path);
+
+            urlList = eval(urlList);
+
+            if (urlList.length == 0) {
+                alert("文件夹中没有图片 ！");
+                return;
+            }
+
+            var picBox = $j.PictureBoxFit();
+
+            picBox.Width("100%");
+            picBox.Height("100%");
+            picBox.Images(urlList);
+
+            picBox.Play();
+
+            var picBoxElement = picBox.Element();
+
+            picBoxElement.oncontextmenu = function (e) {
+
+                _drag = drag;
+                _playPath = path;
+
+                if (!_contextMenu) {
+
+                    var divContextMenu = document.getElementById("divContextMenu");
+
+                    _contextMenu = $j.ContextMenu(divContextMenu);
+                }
+
+                _contextMenu.Show(e.clientX, e.clientY);
+
+                return false;
+            }
+
+            var drag = $j.DragObj(picBoxElement);
+
+            drag.Width("200px");
+            drag.Height("300px");
+            drag.MinWidth("50px");
+            drag.MinHeight("50px");
+
+            drag.Show();
+        }
+
+        function OpenOptionsDialog() {
+            if (window.dragOptions) {
+                dragOptions.Show();
+                return;
+            }
+
+            var drag = $j.DragObj();
+
+            drag.Width("400px");
+            drag.Height("300px");
+            drag.MinWidth("400px");
+            drag.MinHeight("300px");
+
+            var divDialog = document.getElementById("divOptions");
+
+            var elemt = drag.Element();
+
+            elemt.innerHTML = divDialog.outerHTML;
+
+            var spanClose = $j.getElementById(elemt, "spanClose");
+
+            spanClose.addEventListener("click", function () {
+                drag.Close();
+            });
+
+            drag.NotDrag(spanClose);
+
+
+            var ifr = $j.getElementById(elemt, "ifrContent");
+            ifr.src = "Options.html";
+
+
+            drag.Show();
+
+            window.dragOptions = drag;
+        }
+
+        function ClosePlay() {
+
+            _drag.Close();
+
+            _contextMenu.Close();
+        }
+
+        function ShowFolderInfo() {
+
+            var drag = $j.DragObj();
+
+            drag.Width("500px");
+            drag.Height("150px");
+            drag.MinWidth("500px");
+            drag.MinHeight("150px");
+
+            var divDialog = document.getElementById("divFolderInfo");
+
+            var elemt = drag.Element();
+
+            elemt.innerHTML = divDialog.outerHTML;
+
+            var spanClose = $j.getElementById(elemt, "spanClose");
+
+            spanClose.addEventListener("click", function () {
+                drag.Close();
+            });
+
+            drag.NotDrag(spanClose);
+
+
+            var divInfo = $j.getElementById(elemt, "divInfo");
+
+            divInfo.innerText = _playPath;
+
+            drag.NotDrag(divInfo);
+
+
+            drag.Show();
+
+            _contextMenu.Close();
+        }
+
+
+</script>
+</head>
+<body>
+
+    <table style="width:100%">
+        <tr>
+            <td style="">
+                <input id="txtPath" style="width: 100%" />
+            </td>
+            <td style="width:150px; padding-left:10px; cursor:default">
+                <span onclick="OpenFolderDialog();">文件夹</span>&nbsp;
+                <span onclick="PlayFolder();">播放</span>&nbsp;
+                <span onclick="OpenOptionsDialog();">设置</span>
+            </td>
+        </tr>
+    </table>
+
+    
+    <div style="display:none">
+
+        <div id="divContextMenu" style="width:100%; height:100%; background-color:cornsilk; border:solid 1px cornflowerblue; cursor:default">
+            <div onclick="ClosePlay();">关闭</div>
+            <div onclick="ShowFolderInfo();">文件夹信息</div>
+        </div>
+
+    </div>
+
+    <div id="divTemplates" style="display:none">
+
+        <div id="divFolderInfo" style="box-sizing:border-box; border: 1px solid gray; padding:5px; padding-bottom:10px; height: 100%; background-color:white ;">
+            <table id="table1" style="width:100%; height:100%;">
+                <tr>
+                    <td style="height:1px; padding-bottom:5px; border-bottom:solid 1px gray">
+                        <div>文件夹信息<span id="spanClose" style="float:right; cursor:default">×</span></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-bottom:solid 1px gray">
+                        <div id="divInfo"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!--<div id="divDialog" style="border: 1px solid gray; padding:5px; height: 100%; background-color:white ; display:flex; flex-flow:column">-->
+        <div id="divOptions" style="box-sizing:border-box; border: 1px solid gray; padding:5px; padding-bottom:10px; height: 100%; background-color:white ;">
+            <table id="table1" style="width:100%; height:100%;">
+                <tr>
+                    <td style="height:1px; padding-bottom:5px; border-bottom:solid 1px gray">
+                        <div>设置<span id="spanClose" style="float:right; cursor:default">×</span></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-bottom:solid 1px gray">
+                        <iframe id="ifrContent" style="border:0px; width:100%; height:100%"></iframe>
+                    </td>
+                </tr>
+            </table>
+            <!--<div style="padding:5px">选项<span id="spanClose" style="float:right;">×</span></div>
+        <iframe id="ifrContent" style="border:solid 1px blue; flex:1 "></iframe>-->
+        </div>
+
+    </div>
+
+</body>
+</html>
