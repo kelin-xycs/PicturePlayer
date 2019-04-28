@@ -103,7 +103,9 @@
             drag.MinWidth("400px");
             drag.MinHeight("300px");
 
-            var divDialog = document.getElementById("divOptions");
+            var divTemplates = document.getElementById("divTemplates");
+
+            var divDialog = $j.getElementById(divTemplates, "divOptions");
 
             var elemt = drag.Element();
 
@@ -150,7 +152,9 @@
             drag.MinWidth("500px");
             drag.MinHeight("150px");
 
-            var divDialog = document.getElementById("divInfoTip");
+            var divTemplates = document.getElementById("divTemplates");
+
+            var divDialog = $j.getElementById(divTemplates, "divInfoTip");
 
             var elemt = drag.Element();
 
