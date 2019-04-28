@@ -93,9 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Htmls\jWebForm\DragObj.js" />
-    <EmbeddedResource Include="Htmls\jWebForm\DropDown.js" />
-    <EmbeddedResource Include="Htmls\jWebForm\DropDownList.js" />
-    <EmbeddedResource Include="Htmls\jWebForm\DropMenu.js" />
     <EmbeddedResource Include="Htmls\jWebForm\jWebForm.css" />
     <EmbeddedResource Include="Htmls\jWebForm\jWebForm.js" />
     <EmbeddedResource Include="Htmls\Main.html" />

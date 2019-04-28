@@ -6,7 +6,6 @@
     <title></title>
     <link rel="stylesheet" type="text/css" href="jWebForm/jWebForm.css" />
     <script type="text/javascript" src="jWebForm/jWebForm.js"></script>
-    <script type="text/javascript" src="jWebForm/DropMenu.js"></script>
     <script type="text/javascript" src="jWebForm/DragObj.js"></script>
     <script type="text/javascript" src="jWebForm/PictureBoxFit.js"></script>
     <script type="text/javascript" src="jWebForm/ContextMenu.js"></script>
@@ -28,12 +27,11 @@
         }
 
         var _drag;
+        var _picBox;
         var _contextMenu;
         var _playPath;
 
         function PlayFolder() {
-            //var ifrEditor = document.getElementById("ifrEditor");
-            //var text = ifrEditor.contentWindow.document.body.innerText;
 
             var txtPath = document.getElementById("txtPath");
 
@@ -67,6 +65,7 @@
             picBoxElement.oncontextmenu = function (e) {
 
                 _drag = drag;
+                _picBox = picBox;
                 _playPath = path;
 
                 if (!_contextMenu) {
@@ -137,6 +136,13 @@
 
         function ShowFolderInfo() {
 
+            ShowInfoTip("文件夹信息", _playPath);
+
+            _contextMenu.Close();
+        }
+
+        function ShowInfoTip(title, info) {
+
             var drag = $j.DragObj();
 
             drag.Width("500px");
@@ -144,11 +150,15 @@
             drag.MinWidth("500px");
             drag.MinHeight("150px");
 
-            var divDialog = document.getElementById("divFolderInfo");
+            var divDialog = document.getElementById("divInfoTip");
 
             var elemt = drag.Element();
 
             elemt.innerHTML = divDialog.outerHTML;
+
+            var spanTitle = $j.getElementById(elemt, "spanTitle");
+
+            spanTitle.innerText = title;
 
             var spanClose = $j.getElementById(elemt, "spanClose");
 
@@ -161,16 +171,24 @@
 
             var divInfo = $j.getElementById(elemt, "divInfo");
 
-            divInfo.innerText = _playPath;
+            divInfo.innerText = info;
 
             drag.NotDrag(divInfo);
 
 
             drag.Show();
+        }
+
+        function ShowImageInfo()
+        {
+            var url = _picBox.CurrentImageUrl();
+
+            url = decodeURI(url);
+
+            ShowInfoTip("图片信息", url);
 
             _contextMenu.Close();
         }
-
 
 </script>
 </head>
@@ -191,29 +209,30 @@
 
     <br />
 
-    *  一个文件夹是一组图片，可以同时播放多组图片
+    *  一个文件夹是一组图片，可以同时播放多组图片，右键关闭播放磁贴
     
     <div style="display:none">
 
         <div id="divContextMenu" style="width:100%; height:100%; background-color:cornsilk; border:solid 1px cornflowerblue; cursor:default">
             <div onclick="ClosePlay();">关闭</div>
             <div onclick="ShowFolderInfo();">文件夹信息</div>
+            <div onclick="ShowImageInfo();">图片信息</div>
         </div>
 
     </div>
 
     <div id="divTemplates" style="display:none">
 
-        <div id="divFolderInfo" style="box-sizing:border-box; border: 1px solid gray; padding:5px; padding-bottom:10px; height: 100%; background-color:white ;">
+        <div id="divInfoTip" style="box-sizing:border-box; border: 1px solid gray; padding:5px; padding-bottom:10px; height: 100%; background-color:white; overflow:hidden;">
             <table id="table1" style="width:100%; height:100%;">
                 <tr>
                     <td style="height:1px; padding-bottom:5px; border-bottom:solid 1px gray">
-                        <div>文件夹信息<span id="spanClose" style="float:right; cursor:default">×</span></div>
+                        <div><span id="spanTitle"></span><span id="spanClose" style="float:right; cursor:default">×</span></div>
                     </td>
                 </tr>
                 <tr>
-                    <td style="border-bottom:solid 1px gray">
-                        <div id="divInfo"></div>
+                    <td style="border-bottom:solid 1px gray;">
+                        <div id="divInfo" style="word-break:break-all;"></div>
                     </td>
                 </tr>
             </table>
